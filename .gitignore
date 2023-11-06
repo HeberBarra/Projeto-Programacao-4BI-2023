@@ -42,3 +42,7 @@ build/
 .class
 .jar
 .war
+
+### Programa ###
+
+main/resources/tarefas/
