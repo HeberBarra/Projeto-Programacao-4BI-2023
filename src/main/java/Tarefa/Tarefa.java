@@ -8,6 +8,7 @@ public class Tarefa {
     private Status status = Status.EM_ANDAMENTO;
     private ArrayList<String> funcionarios;
     private ArrayList<Material> materiais;
+    private ArrayList<Residuo> residuos;
 
     public Tarefa(String nome, ArrayList<String> funcionarios, ArrayList<Material> materiais) {
         this.nome = nome;
@@ -45,5 +46,13 @@ public class Tarefa {
 
     public void setMateriais(ArrayList<Material> materiais) {
         this.materiais = materiais;
+    }
+
+    public ArrayList<Residuo> getResiduos() {
+        return residuos;
+    }
+
+    public void setResiduos(ArrayList<Residuo> residuos) {
+        this.residuos = residuos;
     }
 }
