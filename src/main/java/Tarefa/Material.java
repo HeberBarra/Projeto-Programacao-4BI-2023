@@ -2,8 +2,12 @@ package Tarefa;
 
 import org.json.JSONObject;
 
+// Classe pai das classes Recurso e Residuo,
+// criada para evitar repetição de código, pois ambas são muito parecidas
 class Material {
     private String nome;
+
+    // o valor é armazenado em centavos para maior precisão
     private long valor;
     private int quantidade;
 
@@ -25,6 +29,8 @@ class Material {
         return valor;
     }
 
+    // retorna o valor formatado como reais, exemplo, 200 vira R$2,00.
+    // o método substring é usado para pegar uma parte específica de uma String
     public String getValorString() {
         String centavos = String.valueOf(valor);
         return String.format("R$%s,%s", centavos.substring(0, centavos.length() - 2), centavos.substring(centavos.length() - 2));
@@ -46,6 +52,8 @@ class Material {
         return quantidade * valor;
     }
 
+    // pega as informações de um material e passa para uma estrutura JSON,
+    // é usada para salvar em arquivo
     public JSONObject getValoresJSON() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nome", nome);
