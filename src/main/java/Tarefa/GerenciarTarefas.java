@@ -1,17 +1,33 @@
 package Tarefa;
 
-import java.time.LocalDate;
+import LeitorJson.LeitorJson;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GerenciarTarefas {
     // TODO: criar classe para o gerenciamento de tarefas, listagem, exclução, gerenciamento, etc.
+    private final File pastaTarefas = new File("src/main/resources/tarefas/");
+    private final LeitorJson leitorJson = new LeitorJson();
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    public ArrayList<String> lerArquivosTarefas() {
-        // TODO: método que lê os arquivos do diretório/pasta src/main/resources/tarefas/
-        //  e retorna objetos Tarefa com base nas informações salvas.
+    public GerenciarTarefas() {
+        logger.log(Level.INFO, String.valueOf(pastaTarefas.mkdirs()));
+    }
 
-        // return só pra não dá erro, mude
-        return new ArrayList<>();
+    public ArrayList<Tarefa> lerArquivosTarefas() {
+        ArrayList<Tarefa> tarefas = new ArrayList<>();
+        File[] arquivosTarefas = pastaTarefas.listFiles();
+
+        if (arquivosTarefas == null) return tarefas;
+
+        for (var arquivo: arquivosTarefas) {
+            tarefas.add(new Tarefa(arquivo.getName(), leitorJson.lerArquivo(arquivo.getPath())));
+        }
+
+        return tarefas;
     }
 
     public void excluirTarefa(String nomeTarefa) {
@@ -19,20 +35,30 @@ public class GerenciarTarefas {
         //  Pede confirmação ao usuário antes de deletar
     }
 
-    public Tarefa pegarTarefaPeloNome(String nomeTarefa) {
-        // TODO: método que procura uma tarefa no diretório tarefas
-        //  e retorna um objeto Tarefa se a tarefa existir
-        //  se a Tarefa não existir criar um erro avisando
+    public Tarefa pegarTarefaPeloNome(String nomeTarefa) throws TarefaNaoEncontrada {
+        File[] arquivosTarefa = pastaTarefas.listFiles();
 
-        // return só pra não dá erro, mude
-        return new Tarefa("placeholder", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), LocalDate.now());
+        // TarefaNaoEncontrada é uma classe que herda da classe Exception.
+        // Criado para deixar a exceção mais fácil de entender
+        if (arquivosTarefa == null) throw new TarefaNaoEncontrada("Arquivo não encontrado");
+
+        for (var arquivo: arquivosTarefa) {
+            if (arquivo.getName().equals(nomeTarefa + ".json")) {
+                return new Tarefa(arquivo.getName(), leitorJson.lerArquivo(arquivo.getPath()));
+            }
+        }
+
+        throw new TarefaNaoEncontrada("Arquivo não encontrado");
     }
 
     public int pegarTarefaPeloNome(String nomeTarefa, ArrayList<Tarefa> tarefas) {
-        // TODO: método alternativo que ao invés de procurar no disco,
-        //  procura num ArrayList de tarefas e retorna o index
+        for (int i = 0; i < tarefas.size(); i++) {
+            if (tarefas.get(i).getNome().equals(nomeTarefa)) {
+                return i;
+            }
+        }
 
-        // return só pra não dá erro, mude
-        return 0;
+        // retorna -1 caso a tarefa não tenha sido encontrada
+        return -1;
     }
 }
