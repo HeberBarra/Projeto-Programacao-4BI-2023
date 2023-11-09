@@ -28,7 +28,7 @@ public class GerenciarTarefas {
         return new Tarefa("placeholder", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), LocalDate.now());
     }
 
-    public int pegarTarelaPeloNome(String nomeTarefa, ArrayList<Tarefa> tarefas) {
+    public int pegarTarefaPeloNome(String nomeTarefa, ArrayList<Tarefa> tarefas) {
         // TODO: método alternativo que ao invés de procurar no disco,
         //  procura num ArrayList de tarefas e retorna o index
 
