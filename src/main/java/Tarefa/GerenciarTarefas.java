@@ -14,6 +14,7 @@ public class GerenciarTarefas {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public GerenciarTarefas() {
+        // O método mkdirs garante que as pastas sejam criadas para que erros não aconteçam
         logger.log(Level.INFO, String.valueOf(pastaTarefas.mkdirs()));
     }
 
@@ -31,8 +32,12 @@ public class GerenciarTarefas {
     }
 
     public void excluirTarefa(String nomeTarefa) {
-        // TODO: deleta o arquivo de uma tarefa com base no nome da tarefa.
-        //  Pede confirmação ao usuário antes de deletar
+        // Garante que o nome da tarefa seja um caminho apropriado
+        if (!nomeTarefa.contains(pastaTarefas.getPath())) { nomeTarefa = pastaTarefas.getPath() + "/" + nomeTarefa; }
+        if (!nomeTarefa.contains(".json")) nomeTarefa += ".json";
+
+        File arquivoTarefa = new File(nomeTarefa);
+        logger.log(Level.INFO, String.valueOf(arquivoTarefa.delete()));
     }
 
     public Tarefa pegarTarefaPeloNome(String nomeTarefa) throws TarefaNaoEncontrada {
