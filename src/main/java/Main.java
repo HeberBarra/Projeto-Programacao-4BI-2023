@@ -1,5 +1,9 @@
+import Tarefa.GerenciarTarefas;
+
 public class Main {
     // TODO: criar classe de controle principal
+
+    private final GerenciarTarefas gerenciarTarefas = new GerenciarTarefas();
 
     public static void main(String[] args) {
         Main main = new Main();
