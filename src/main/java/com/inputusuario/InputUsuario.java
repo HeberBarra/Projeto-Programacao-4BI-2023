@@ -1,6 +1,7 @@
 package com.inputusuario;
 
 import javax.swing.JOptionPane;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class InputUsuario {
@@ -35,5 +36,45 @@ public class InputUsuario {
 
             return input;
         }
+    }
+
+    public String escolhaDeLista(ArrayList<String> listaOpcoes, String nome) throws CancelarOperacao {
+        String[] opcoes = new String[listaOpcoes.size() + 1];
+        opcoes[0] = "Outro";
+
+        for (int i = 0; i < listaOpcoes.size(); i++) {
+            opcoes[i + 1] = listaOpcoes.get(i);
+        }
+
+        String resposta;
+
+        while (true) {
+
+            resposta = (String) JOptionPane.showInputDialog(
+                    null,
+                    String.format("Escolha um %s por favor: ", nome),
+                    "ESCOLHA",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    opcoes,
+                    opcoes[0]
+            );
+
+            if (resposta == null) {
+                int cancelar = JOptionPane.showConfirmDialog(
+                        null,
+                        "Deseja cancelar a operação?",
+                        "CANCELAR?",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (cancelar != JOptionPane.YES_OPTION) continue;
+
+                throw new CancelarOperacao(OpcoesInput.CANCELAR.getValor());
+            }
+
+            break;
+        }
+        return resposta;
     }
 }

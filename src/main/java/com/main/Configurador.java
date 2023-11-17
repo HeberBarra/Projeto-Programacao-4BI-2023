@@ -39,7 +39,7 @@ public class Configurador {
         }
     }
 
-    public void mudarConfiguracoes() {
+    public void criarConfiguracoes() {
         try {
             setNomeEmpresa(inputUsuario.tratarInputString("Qual o nome da empresa?"));
             setTipoEmpresa(inputUsuario.tratarInputString("Qual o tipo da empresa?"));
@@ -64,8 +64,8 @@ public class Configurador {
             );
 
             if (adicionarResiduos == JOptionPane.YES_OPTION) {
-                pegarResiduos();
                 pegarLocaisDescarte();
+                pegarResiduos();
             }
 
         } catch (CancelarOperacao e) {
@@ -88,12 +88,19 @@ public class Configurador {
         }
     }
 
-    private ArrayList<String[]> pegarMateriais(String nomeMaterial, String nomeLocal) throws CancelarOperacao {
+    private ArrayList<String[]> pegarMateriais(String nomeMaterial, String nomeLocal, ArrayList<String> opcoes, String nomeOpcao) throws CancelarOperacao {
         ArrayList<String[]> materiais = new ArrayList<>();
 
         while (true) {
             String nome = inputUsuario.tratarInputString(String.format("Qual o nome do %s?", nomeMaterial));
-            String local = inputUsuario.tratarInputString(String.format("Qual o %s?", nomeLocal));
+
+            String local = inputUsuario.escolhaDeLista(opcoes, nomeOpcao);
+
+            if (local.equals("Outro")) {
+                local = inputUsuario.tratarInputString(String.format("Qual o %s?", nomeLocal));
+                fornecedores.add(local);
+            }
+
             String custoString = inputUsuario.tratarInputString("Qual o custo?(em centavos de real) ");
 
             materiais.add(new String[]{nome, local, custoString});
@@ -113,7 +120,7 @@ public class Configurador {
 
     public void pegarRecursos() throws CancelarOperacao {
         ArrayList<Recurso> recursos = new ArrayList<>();
-        var materiais = pegarMateriais("recurso", "fornecedor");
+        var materiais = pegarMateriais("recurso", "fornecedor", getFornecedores(), "fornecedor");
 
         for (var material: materiais) {
             recursos.add(new Recurso(material[0], material[1], Long.parseLong(material[2]), 0));
@@ -124,7 +131,7 @@ public class Configurador {
 
     public void pegarResiduos() throws CancelarOperacao {
         ArrayList<Residuo> residuos = new ArrayList<>();
-        var materiais = pegarMateriais("resíduo", "local de descarte");
+        var materiais = pegarMateriais("resíduo", "local de descarte", getLocaisDescarte(), "local de descarte");
 
         for (var material: materiais) {
             residuos.add(new Residuo(material[0], material[1], Long.parseLong(material[2]), 0));
