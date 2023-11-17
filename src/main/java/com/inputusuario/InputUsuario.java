@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class InputUsuario {
 
     private final String[] valoresProibidos = {"", " ", OpcoesInput.CANCELAR.getValor(), OpcoesInput.REPETIR.getValor()};
-    public String tratarInputString(String mensagem) {
+    public String tratarInputString(String mensagem) throws CancelarOperacao {
         while (true) {
             String input = JOptionPane.showInputDialog(mensagem);
 
@@ -14,7 +14,7 @@ public class InputUsuario {
                 int escolha = JOptionPane.showConfirmDialog(null, "Deseja cancelar?", "Cancelar?", JOptionPane.YES_NO_OPTION);
 
                 // Talvez mude, principal função desse enum é evitar erro de digitação
-                if (escolha == JOptionPane.YES_OPTION) return OpcoesInput.CANCELAR.getValor();
+                if (escolha == JOptionPane.YES_OPTION) throw new CancelarOperacao(OpcoesInput.CANCELAR.getValor());
 
                 continue;
             }
