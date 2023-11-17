@@ -2,8 +2,10 @@ package com.main;
 
 import com.inputusuario.CancelarOperacao;
 import com.inputusuario.InputUsuario;
+import com.leitorjson.LeitorJson;
 import com.tarefa.Recurso;
 import com.tarefa.Residuo;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.JOptionPane;
@@ -19,6 +21,7 @@ public class Configurador {
     private final File  ARQUIVO_DE_CONFIGURACOES = new File("src/main/resources/config/config.json");
     private final Logger logger = Logger.getLogger(Configurador.class.getName());
     private final InputUsuario inputUsuario = new InputUsuario();
+    private final LeitorJson leitorJson = new LeitorJson();
     private String nomeEmpresa;
     private String tipoEmpresa;
     private ArrayList<Recurso> recursos = new ArrayList<>();
@@ -78,14 +81,84 @@ public class Configurador {
         configuracoesJson.put("tipoEmpresa", getTipoEmpresa());
         configuracoesJson.put("fornecedores", getFornecedores());
         configuracoesJson.put("locaisDescarte", getLocaisDescarte());
-        configuracoesJson.put("recursos", getRecursos());
-        configuracoesJson.put("residuos", getResiduos());
+        configuracoesJson.put("recursos", getRecursosJson());
+        configuracoesJson.put("residuos", getResiduosJson());
 
         try(FileWriter fileWriter = new FileWriter(ARQUIVO_DE_CONFIGURACOES)) {
             configuracoesJson.write(fileWriter, 4, 0);
         } catch (IOException e) {
             logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
         }
+    }
+
+    public void lerConfiguracoes() {
+        var jsonData = leitorJson.lerArquivo(ARQUIVO_DE_CONFIGURACOES.getPath());
+
+        if (jsonData.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Nenhuma configuração foi encontrada",
+                    "CONFIGURAÇÃO NÃO ENCONTRADA",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            criarConfiguracoes();
+            return;
+        }
+
+        setNomeEmpresa(jsonData.optString("nomeEmpresa"));
+        setTipoEmpresa(jsonData.optString("tipoEmpresa"));
+        setFornecedores(pegarLocais(jsonData.getJSONArray("fornecedores")));
+        setLocaisDescarte(pegarLocais(jsonData.getJSONArray("locaisDescarte")));
+        lerRecursos(jsonData.getJSONArray("recursos"));
+        lerResiduos(jsonData.getJSONArray("residuos"));
+    }
+
+    private ArrayList<String[]> lerMateriais(JSONArray informacoes, String chaveLocal) {
+        ArrayList<String[]> materiais = new ArrayList<>();
+
+        for (int i = 0; i < informacoes.length(); i++) {
+            String[] informacoesMaterial = new String[3];
+            JSONObject informacoesMaterialJson = informacoes.getJSONObject(i);
+
+            informacoesMaterial[0] = informacoesMaterialJson.optString("nome");
+            informacoesMaterial[1] = informacoesMaterialJson.optString(chaveLocal);
+            informacoesMaterial[2] = informacoesMaterialJson.optString("valor");
+
+            materiais.add(informacoesMaterial);
+        }
+
+        return materiais;
+    }
+
+    private void lerRecursos(JSONArray recursosJson) {
+        ArrayList<Recurso> recursos = new ArrayList<>();
+        var materiais = lerMateriais(recursosJson, "fornecedor");
+
+        for (var material: materiais) {
+            String nome = material[0];
+            String fornecedor = material[1];
+            long valor = Long.parseLong(material[2]);
+
+            recursos.add(new Recurso(nome, fornecedor, valor, 0));
+        }
+
+        setRecursos(recursos);
+    }
+
+    private void lerResiduos(JSONArray residuosJson) {
+        ArrayList<Residuo> residuos = new ArrayList<>();
+        var materias = lerMateriais(residuosJson, "localDescarte");
+
+        for (var material: materias) {
+            String nome = material[0];
+            String localDescarte = material[1];
+            long valor = Long.parseLong(material[2]);
+
+            residuos.add(new Residuo(nome, localDescarte, valor, 0));
+        }
+
+        setResiduos(residuos);
     }
 
     private ArrayList<String[]> pegarMateriais(String nomeMaterial, String nomeLocal, ArrayList<String> opcoes, String nomeOpcao) throws CancelarOperacao {
@@ -116,6 +189,16 @@ public class Configurador {
         }
 
         return materiais;
+    }
+
+    private ArrayList<String> pegarLocais(JSONArray informacoes) {
+        ArrayList<String> locais = new ArrayList<>();
+
+        for (int i = 0; i < informacoes.length(); i++) {
+            locais.add((String) informacoes.get(i));
+        }
+
+        return locais;
     }
 
     public void pegarRecursos() throws CancelarOperacao {
@@ -214,6 +297,26 @@ public class Configurador {
 
     public ArrayList<Residuo> getResiduos() {
         return residuos;
+    }
+
+    public JSONArray getRecursosJson() {
+        JSONArray recursosJson = new JSONArray();
+
+        for (var recurso: recursos) {
+            recursosJson.put(recurso.getValoresJSON());
+        }
+
+        return recursosJson;
+    }
+
+    public JSONArray getResiduosJson() {
+        JSONArray residuosJson = new JSONArray();
+
+        for (var residuo: residuos) {
+            residuosJson.put(residuo.getValoresJSON());
+        }
+
+        return residuosJson;
     }
 }
 
