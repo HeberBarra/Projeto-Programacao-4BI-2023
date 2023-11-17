@@ -2,6 +2,7 @@ package com.main;
 
 import com.inputusuario.CancelarOperacao;
 import com.inputusuario.InputUsuario;
+import com.inputusuario.OpcoesInput;
 import com.leitorjson.LeitorJson;
 import com.tarefa.Recurso;
 import com.tarefa.Residuo;
@@ -112,6 +113,131 @@ public class Configurador {
         setLocaisDescarte(pegarLocais(jsonData.getJSONArray("locaisDescarte")));
         lerRecursos(jsonData.getJSONArray("recursos"));
         lerResiduos(jsonData.getJSONArray("residuos"));
+    }
+
+    public void mudarConfiguracoes() throws CancelarOperacao {
+        String[] opcoesConfiguracoes = {
+                "Nome da Empresa",
+                "Tipo da Empresa",
+                "Fornecedores",
+                "Locais de Descarte",
+                "Recursos",
+                "Resíduos"
+        };
+
+        String escolha = (String) JOptionPane.showInputDialog(
+                null,
+                "Escolha uma configuração por favor",
+                "ESCOLHA UM",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                opcoesConfiguracoes,
+                opcoesConfiguracoes[0]
+        );
+
+        switch (escolha) {
+            case "Nome da Empresa" -> mudarNome();
+            
+            case "Tipo da Empresa" -> mudarTipo();
+            
+            case "Fornecedores" -> mudarFornecedores();
+            
+            case "Locais de Descarte" -> mudarLocaisDescarte();
+            
+            default -> {
+                int sair = JOptionPane.showConfirmDialog(null, "Deseja sair?", "SAIR?", JOptionPane.YES_NO_OPTION);
+                if (sair == JOptionPane.YES_OPTION) throw new CancelarOperacao();
+            }
+        }
+    }
+
+    private ArrayList<String> mudarListaString(ArrayList<String> listaInformacoes, String nomeLista, String nomeIndividual) throws CancelarOperacao {
+        // StringBuilder informacoes = new StringBuilder();
+        String[] opcoesInformacoes = new String[listaInformacoes.size()];
+        String[] opcoesIndividuais = {
+                "Apagar um " + nomeIndividual,
+                "Mudar um " + nomeIndividual,
+                "Criar um " + nomeIndividual
+        };
+
+        int opcaoEscolhida = JOptionPane.showOptionDialog(
+                null,
+                "Escolha uma opcao",
+                "ESCOLHA UM",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcoesIndividuais,
+                opcoesIndividuais[0]
+        );
+
+        switch (opcaoEscolhida) {
+            case 0 -> {
+                String escolha = inputUsuario.escolhaDeLista(listaInformacoes, nomeIndividual);
+                listaInformacoes.remove(escolha);
+            }
+
+            case 1 -> {
+                String escolha = inputUsuario.escolhaDeLista(listaInformacoes, nomeIndividual);
+                String novo = inputUsuario.tratarInputString(String.format("Qual o novo valor para %s?", escolha));
+                int index = listaInformacoes.indexOf(escolha);
+                listaInformacoes.set(index, novo);
+            }
+
+            case 2 -> listaInformacoes.add(inputUsuario.tratarInputString(String.format("Qual o novo %s?", nomeIndividual)));
+
+            default -> {
+                int escolha = JOptionPane.showConfirmDialog(null, "Deseja sair?", "SAIR?", JOptionPane.YES_NO_OPTION);
+                if (escolha == JOptionPane.YES_OPTION) throw new CancelarOperacao();
+            }
+        }
+
+        return listaInformacoes;
+    }
+
+    private void mudarFornecedores() {
+        try {
+            setFornecedores(mudarListaString(fornecedores, "fornecedores", "fornecedor"));
+        } catch (CancelarOperacao e) {
+            JOptionPane.showMessageDialog(null, "Operação Cancelada.");
+        }
+    }
+
+    private void mudarLocaisDescarte() {
+        try {
+            setLocaisDescarte(mudarListaString(locaisDescarte, "locais de descarte", "local de descarte"));
+        } catch (CancelarOperacao e) {
+            JOptionPane.showMessageDialog(null, "Operação Cancelada.");
+        }
+    }
+    
+    private String mudarString(String nomeValor, String valor) throws CancelarOperacao {
+        int mudar = JOptionPane.showConfirmDialog(
+                null,
+                String.format("%s atual %s. Deseja mudá-lo", nomeValor, valor),
+                "ESCOLHA UM",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (mudar != JOptionPane.YES_OPTION) throw new CancelarOperacao();
+
+        return inputUsuario.tratarInputString(String.format("Qual o novo %s?", nomeValor));
+    }
+
+    private void mudarNome() {
+        try {
+            setNomeEmpresa(mudarString("nome da empresa", getNomeEmpresa()));
+        } catch (CancelarOperacao e) {
+            JOptionPane.showMessageDialog(null, "Mudança cancelada.");
+        }
+    }
+
+    private void mudarTipo() {
+        try {
+            setTipoEmpresa(mudarString("tipo da empresa", getTipoEmpresa()));
+        } catch (CancelarOperacao e) {
+            JOptionPane.showMessageDialog(null, "Mudança cancelada.");
+        }
     }
 
     private ArrayList<String[]> lerMateriais(JSONArray informacoes, String chaveLocal) {
