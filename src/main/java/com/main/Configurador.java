@@ -43,10 +43,31 @@ public class Configurador {
         try {
             setNomeEmpresa(inputUsuario.tratarInputString("Qual o nome da empresa?"));
             setTipoEmpresa(inputUsuario.tratarInputString("Qual o tipo da empresa?"));
-            pegarRecursos();
-            pegarResiduos();
-            pegarFornecedores();
-            pegarLocaisDescarte();
+
+            int adicionarRecursos = JOptionPane.showConfirmDialog(
+                    null,
+                    "Adicionar recursos?",
+                    "ADICIONAR RECURSOS?",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (adicionarRecursos == JOptionPane.YES_OPTION) {
+                pegarFornecedores();
+                pegarRecursos();
+            }
+
+            int adicionarResiduos = JOptionPane.showConfirmDialog(
+                    null,
+                    "Adicionar resíduos?",
+                    "ADICIONAR RESÍDUOS?",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (adicionarResiduos == JOptionPane.YES_OPTION) {
+                pegarResiduos();
+                pegarLocaisDescarte();
+            }
+
         } catch (CancelarOperacao e) {
             JOptionPane.showMessageDialog(null, "Operação cancelada.");
             return;
@@ -73,7 +94,7 @@ public class Configurador {
         while (true) {
             String nome = inputUsuario.tratarInputString(String.format("Qual o nome do %s?", nomeMaterial));
             String local = inputUsuario.tratarInputString(String.format("Qual o %s?", nomeLocal));
-            String custoString = inputUsuario.tratarInputString("Qual o custo? ");
+            String custoString = inputUsuario.tratarInputString("Qual o custo?(em centavos de real) ");
 
             materiais.add(new String[]{nome, local, custoString});
 
