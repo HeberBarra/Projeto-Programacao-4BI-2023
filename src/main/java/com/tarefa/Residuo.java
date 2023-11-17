@@ -3,23 +3,23 @@ package com.tarefa;
 import org.json.JSONObject;
 
 public class Residuo extends Material {
-    private String localDiscarte;
+    private String localDescarte;
 
     // super é usado para acessar um método herdado de uma classe,
     // de forma que ainda possamos fazer modificações no método, por exemplo, neste caso
     // o método super chama o construtor da classe Material,
     // porém o construtor da classe também salva uma propriedade a mais
-    public Residuo(String nome, String localDiscarte, long valor, int quantidade) {
+    public Residuo(String nome, String localDescarte, long valor, int quantidade) {
         super(nome, valor, quantidade);
-        this.localDiscarte = localDiscarte;
+        this.localDescarte = localDescarte;
     }
 
-    public String getLocalDiscarte() {
-        return localDiscarte;
+    public String getLocalDescarte() {
+        return localDescarte;
     }
 
-    public void setLocalDiscarte(String novoLocalDiscarte) {
-        this.localDiscarte = novoLocalDiscarte;
+    public void setLocalDescarte(String novoLocalDiscarte) {
+        this.localDescarte = novoLocalDiscarte;
     }
 
     // utiliza o super para pegar os valores comuns,
@@ -28,7 +28,7 @@ public class Residuo extends Material {
     @Override
     public JSONObject getValoresJSON() {
         JSONObject jsonObject = super.getValoresJSON();
-        jsonObject.put("localDiscarte", localDiscarte);
+        jsonObject.put("localDiscarte", localDescarte);
         return jsonObject;
     }
 }
