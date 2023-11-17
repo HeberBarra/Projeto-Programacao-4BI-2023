@@ -1,4 +1,4 @@
-package InputUsuario;
+package com.inputusuario;
 
 public enum OpcoesInput {
     CANCELAR("CANCELAR"),

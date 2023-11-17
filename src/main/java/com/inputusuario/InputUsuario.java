@@ -1,4 +1,4 @@
-package InputUsuario;
+package com.inputusuario;
 
 import javax.swing.JOptionPane;
 import java.util.Arrays;

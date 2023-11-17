@@ -1,6 +1,6 @@
 package com.main;
 
-import Tarefa.GerenciarTarefas;
+import com.tarefa.GerenciarTarefas;
 
 public class Main {
     // TODO: criar classe de controle principal

@@ -1,10 +1,11 @@
-package LeitorJson;
+package com.leitorjson;
 
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -15,7 +16,7 @@ public class LeitorJson {
           File file = new File(caminhoArquivo);
 
           String conteudo;
-          try (FileReader fileReader = new FileReader(file)) {
+          try (FileReader fileReader = new FileReader(file, Charset.availableCharsets().get("Big5"))) {
                conteudo = new String(Files.readAllBytes(file.toPath()));
           } catch (IOException e) {
                Logger logger = Logger.getLogger(LeitorJson.class.getName());

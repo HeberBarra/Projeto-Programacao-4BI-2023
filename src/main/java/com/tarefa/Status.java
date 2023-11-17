@@ -1,4 +1,4 @@
-package Tarefa;
+package com.tarefa;
 
 // Enum é uma estrutura que serve para definir um conjunto de valores possíveis
 // para alguma coisa, neste os status possíveis de uma tarefa.
