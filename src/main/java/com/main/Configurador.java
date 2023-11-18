@@ -26,10 +26,7 @@ public class Configurador {
     private ArrayList<Residuo> residuos = new ArrayList<>();
     private ArrayList<String> fornecedores = new ArrayList<>();
     private ArrayList<String> locaisDescarte = new ArrayList<>();
-
-    // TODO: criar método para ler o arquivo "src/main/resources/config/config.json,
-    //  usando a classe Leitor JSON"
-    // TODO: criar método para interface gráfica modificar o arquivo de forma apropriada
+    
     public Configurador() {
         // Garante que o arquivo de configurações existe
         try (
