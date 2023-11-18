@@ -9,9 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -34,9 +32,17 @@ public class Configurador {
     // TODO: criar método para interface gráfica modificar o arquivo de forma apropriada
     public Configurador() {
         // Garante que o arquivo de configurações existe
-        try {
+        try (
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(ARQUIVO_DE_CONFIGURACOES));
+            FileWriter fileWriter = new FileWriter(ARQUIVO_DE_CONFIGURACOES)
+        ) {
             logger.log(Level.INFO, String.valueOf(new File(ARQUIVO_DE_CONFIGURACOES.getParent()).mkdirs()));
             logger.log(Level.INFO, String.valueOf(ARQUIVO_DE_CONFIGURACOES.createNewFile()));
+
+            if (bufferedReader.readLine() == null) {
+                fileWriter.write("{}");
+            }
+
         } catch (IOException e) {
             logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
         }
