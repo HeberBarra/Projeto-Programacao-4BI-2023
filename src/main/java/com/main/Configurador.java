@@ -268,6 +268,7 @@ public class Configurador {
         String[] botoesMenuDois = {"anterior", "próximo", "modificar", "deletar", "sair"};
 
         while (true) {
+            salvarConfiguracoes();
             int opcaoEscolhidaMenuUm = JOptionPane.showOptionDialog(
                     null,
                     "O que deseja fazer?",
