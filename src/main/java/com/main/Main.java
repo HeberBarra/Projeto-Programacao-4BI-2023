@@ -251,7 +251,7 @@ public class Main {
                 case 1 -> {
                     try {
                         while (true) {
-                            int novaQuantidade = Integer.parseInt(inputUsuario.tratarInputString("Qual a nova quantidade? "));
+                            int novaQuantidade = inputUsuario.tratarInputInt("Qual a nova quantidade? ");
 
                             if (novaQuantidade < 1) {
                                 JOptionPane.showMessageDialog(null, "Deve-se adicionar ao menos um!");
@@ -367,7 +367,7 @@ public class Main {
             int quantidade;
 
             while (true) {
-                quantidade = Integer.parseInt(inputUsuario.tratarInputString("Qual a quantidade?"));
+                quantidade = inputUsuario.tratarInputInt("Qual a quantidade?");
 
                 if (quantidade < 1) {
                     JOptionPane.showMessageDialog(null, "É necessário adicionar ao menos um!");
@@ -416,12 +416,15 @@ public class Main {
         valor = inputUsuario.tratarInputString("Qual o valor? ");
 
         while (true) {
-            quantidade = inputUsuario.tratarInputString("Qual a quantidade?");
+            int quantidadeInt = inputUsuario.tratarInputInt("Qual a quantidade?");
 
-            if (Integer.parseInt(quantidade) < 1) {
+            if (quantidadeInt < 1) {
                 JOptionPane.showMessageDialog(null, "É necessário adicionar ao menos um!");
                 continue;
             }
+
+            quantidade = String.valueOf(quantidadeInt);
+            
             break;
         }
 
