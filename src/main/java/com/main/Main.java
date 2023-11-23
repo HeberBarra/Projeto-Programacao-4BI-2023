@@ -83,7 +83,7 @@ public class Main {
     //  (nome, status, funcionários, recursos e resíduos com as informações deles, prazo e data de entrega)
     //  permitir modificação das informações usando eventos(essa parte se quiser posso fazer separado)
     public void gerenciarTarefa() {
-        String[] opcoes = {"Voltar", "Modificar", "Mostrar Recursos", "Mostrar Resíduos", "Salvar"};
+        String[] opcoes = {"Voltar", "Modificar", "Mostrar Recursos", "Mostrar Resíduos", "Salvar", "Excluir"};
 
         loop:
         while (true) {
@@ -107,8 +107,7 @@ public class Main {
                 }
 
                 // Modificar
-                case 1 -> {
-                }
+                case 1 -> main.modificarTarefa();
 
                 // Mostrar recursos
                 case 2 -> {
@@ -168,6 +167,23 @@ public class Main {
                 // Salvar
                 case 4 -> tarefaAtual.salvarTarefa();
 
+                // Excluir
+                case 5 -> {
+                    int excluir = JOptionPane.showConfirmDialog(
+                            null,
+                            "Deseja a apagar a tarefa?",
+                            "APAGAR?",
+                            JOptionPane.YES_NO_OPTION
+                    );
+
+                    if (excluir == JOptionPane.YES_OPTION) {
+                        gerenciarTarefas.excluirTarefa(tarefaAtual.getNome());
+                    }
+
+                    main.mostrarTarefas();
+                    return;
+                }
+
                 default -> {
                     int continuar = JOptionPane.showConfirmDialog(
                             null,
@@ -183,6 +199,10 @@ public class Main {
                 }
             }
         }
+    }
+
+    private void modificarTarefa() {
+
     }
 
     private void modificarMateriais(ArrayList<Material> materiais) {
