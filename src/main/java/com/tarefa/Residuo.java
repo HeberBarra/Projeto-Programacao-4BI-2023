@@ -31,4 +31,14 @@ public class Residuo extends Material {
         jsonObject.put("localDiscarte", localDescarte);
         return jsonObject;
     }
+
+    @Override
+    public String getLocal() {
+        return getLocalDescarte();
+    }
+
+    @Override
+    public String getNomeLocal() {
+        return "Local de descarte";
+    }
 }

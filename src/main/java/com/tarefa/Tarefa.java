@@ -222,9 +222,21 @@ public class Tarefa {
         this.dataDeEntrega = dataDeEntrega;
     }
 
+    public void atualizarStatus() {
+        int prazo = LocalDate.now().until(dataDeEntrega).getDays();
+
+        if (prazo < 0 && status == Status.EM_ANDAMENTO) {
+            setStatus(Status.ATRASADO);
+        }
+
+        salvarTarefa();
+    }
+
     // calcula o prazo em dias, da data atual até a data salva.
     // Se a data já passou, os dias ficarão negativos
     public int calcularPrazo() {
+        atualizarStatus();
+        salvarTarefa();
         return LocalDate.now().until(dataDeEntrega).getDays();
     }
 }

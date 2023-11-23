@@ -32,4 +32,14 @@ public class Recurso extends Material {
         jsonObject.put("fornecedor", fornecedor);
         return jsonObject;
     }
+
+    @Override
+    public String getLocal() {
+        return getFornecedor();
+    }
+
+    @Override
+    public String getNomeLocal() {
+        return "Fornecedor";
+    }
 }
