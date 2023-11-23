@@ -4,6 +4,7 @@ import com.inputusuario.CancelarOperacao;
 import com.inputusuario.InputUsuario;
 import com.tarefa.*;
 import javax.swing.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Main {
@@ -78,10 +79,7 @@ public class Main {
 
         frameTarefas.setVisible(true);
     }
-
-    // TODO: método para gerenciar uma tarefa, mostra as informações necessárias
-    //  (nome, status, funcionários, recursos e resíduos com as informações deles, prazo e data de entrega)
-    //  permitir modificação das informações usando eventos(essa parte se quiser posso fazer separado)
+    
     public void gerenciarTarefa() {
         String[] opcoes = {"Voltar", "Modificar", "Mostrar Recursos", "Mostrar Resíduos", "Salvar", "Excluir"};
 
@@ -202,6 +200,148 @@ public class Main {
     }
 
     private void modificarTarefa() {
+        String[] opcoesTarefa = {"Nome", "Status", "Data de Entrega", "Funcionários"};
+        Status[] statuses = {
+                Status.EM_ANDAMENTO,
+                Status.ATRASADO,
+                Status.CONCLUIDO,
+                Status.NAO_CONFORME,
+                Status.REPROVADO
+        };
+
+        String escolha;
+
+        try {
+            escolha = inputUsuario.escolhaDeLista(opcoesTarefa, "opção");
+
+
+            switch (escolha) {
+
+                case "Nome" -> {
+                    String novoNome = inputUsuario.tratarInputString("Qual o novo da tarefa");
+                    String nomeAntigo = tarefaAtual.getNome();
+                    tarefaAtual.setNome(novoNome);
+                    tarefaAtual.salvarTarefa();
+                    gerenciarTarefas.excluirTarefa(nomeAntigo);
+                }
+
+                case "Status" -> {
+                    Status novoStatus = inputUsuario.escolhaDeLista(statuses, "status");
+                    tarefaAtual.setStatus(novoStatus);
+                    tarefaAtual.salvarTarefa();
+                }
+
+                case "Data de Entrega" -> {
+                    LocalDate novaData = inputUsuario.tratarInputData();
+
+                    if (tarefaAtual.getStatus() == Status.ATRASADO) {
+                        tarefaAtual.setStatus(Status.EM_ANDAMENTO);
+                    }
+
+                    tarefaAtual.setDataDeEntrega(novaData);
+                    tarefaAtual.atualizarStatus();
+                    tarefaAtual.salvarTarefa();
+                }
+
+                case "Funcionários" -> {
+                    ArrayList<String> listaFuncionarios = tarefaAtual.getFuncionarios();
+                    String[] botoesOpcoes = {"Voltar", "Modificar", "Excluir", "Próximo"};
+                    do {
+                        String opcaoEscolhida = inputUsuario.escolhaDeLista(new String[]{"Criar", "Visualizar", "Voltar"}, "opcao");
+
+                        if (opcaoEscolhida.equals("Voltar")) {
+                            return;
+                        }
+
+                        if (opcaoEscolhida.equals("Criar")) {
+                            String novoFuncionario = inputUsuario.tratarInputString("Qual o novo funcionário");
+
+                            if (tarefaAtual.getFuncionarios().contains(novoFuncionario)) {
+                                JOptionPane.showMessageDialog(null, "Funcionário já existe");
+                                continue;
+                            }
+
+                            listaFuncionarios.add(novoFuncionario);
+                            tarefaAtual.setFuncionarios(listaFuncionarios);
+                            tarefaAtual.salvarTarefa();
+                            continue;
+                        }
+
+
+                        for (int i = 0; i < listaFuncionarios.size(); i++) {
+                            int botaoEscolhido = JOptionPane.showOptionDialog(
+                                    null,
+                                    String.format("Funcionário: %s \nO que deseja fazer?", listaFuncionarios.get(i)),
+                                    "ESCOLHA",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    null,
+                                    botoesOpcoes,
+                                    botoesOpcoes[0]
+                            );
+
+                            switch (botaoEscolhido) {
+
+                                // Anterior
+                                case 0 -> {
+                                    if (i == 0) {
+                                        i = listaFuncionarios.size() - 2;
+                                        continue;
+                                    }
+
+                                    i -= 2;
+                                }
+
+                                // Modificar
+                                case 1 -> {
+                                    String novoNomeFuncionario = inputUsuario.tratarInputString("Qual o novo nome? ");
+
+                                    if (novoNomeFuncionario.equals(listaFuncionarios.get(i))) {
+                                        JOptionPane.showMessageDialog( null,"O novo nome não pode ser igual ao anterior","Erro",JOptionPane.ERROR_MESSAGE);
+                                        i--;
+                                        continue;
+                                    }
+
+                                    listaFuncionarios.set(i, novoNomeFuncionario);
+                                    tarefaAtual.setFuncionarios(listaFuncionarios);
+                                    tarefaAtual.salvarTarefa();
+                                    JOptionPane.showMessageDialog(null, "Nome modificado");
+                                    i--;
+                                }
+
+                                // Excluir
+                                case 2 -> {
+                                    int excluir = JOptionPane.showConfirmDialog(
+                                            null,
+                                            String.format("Deseja excluir o funcionário: %s?", listaFuncionarios.get(i)),
+                                            "EXCLUIR",
+                                            JOptionPane.YES_NO_OPTION,
+                                            JOptionPane.WARNING_MESSAGE
+                                    );
+
+                                    if (excluir == JOptionPane.YES_OPTION) {
+                                        listaFuncionarios.remove(i);
+                                        tarefaAtual.setFuncionarios(listaFuncionarios);
+                                        tarefaAtual.salvarTarefa();
+                                        return;
+                                    }
+                                }
+
+                                // Próximo
+                                case 3 -> {
+                                    if (i == listaFuncionarios.size() - 1) {
+                                        i = -1;
+                                    }
+                                }
+                            }
+                        }
+                    } while (true);
+                }
+            }
+
+        } catch (CancelarOperacao e) {
+            JOptionPane.showMessageDialog(null, "Operação cancelada!");
+        }
 
     }
 
@@ -439,7 +579,7 @@ public class Main {
         tarefa.atualizarStatus();
 
         return String.format(
-                "Nome: %s \nStatus: %s \nData de Entrega: %s \nPrazo: %d dias \nFuncionários: %s \nRecursos: %s \nResíduos: %s",
+                "Nome: %s \nStatus: %s \nData de Entrega: %s \nPrazo: %d dias \n%s \nRecursos: %s \nResíduos: %s",
                 tarefa.getNome(),
                 tarefa.getStatus(),
                 tarefa.getStringDataDeEntrega(),
