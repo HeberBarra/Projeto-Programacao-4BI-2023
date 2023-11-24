@@ -137,7 +137,7 @@ public class Tarefa {
         jsonTarefa.put("residuos", getResiduosJSON());
         jsonTarefa.put("dataDeEntrega", getDataDeEntrega());
 
-        try (FileWriter fileWriter = new FileWriter(String.format("src/main/resources/tarefas/%s.json", getNome()))) {
+        try (FileWriter fileWriter = new FileWriter(String.format("tarefas/%s.json", getNome()))) {
             jsonTarefa.write(fileWriter, 4, 0);
         } catch (IOException e) {
             Logger logger = Logger.getLogger(Tarefa.class.getName());

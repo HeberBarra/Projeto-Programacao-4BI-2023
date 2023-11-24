@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Configurador {
-    private final File ARQUIVO_DE_CONFIGURACOES = new File("src/main/resources/config/config.json");
-    private final File PASTA_CONFIGURACOES = new File("src/main/resources/config/");
+    private final File ARQUIVO_DE_CONFIGURACOES = new File("config/config.json");
+    private final File PASTA_CONFIGURACOES = new File("config/");
     private final Logger logger = Logger.getLogger(Configurador.class.getName());
     private final InputUsuario inputUsuario = new InputUsuario();
     private final LeitorJson leitorJson = new LeitorJson();

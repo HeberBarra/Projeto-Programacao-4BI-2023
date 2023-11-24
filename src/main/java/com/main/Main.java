@@ -720,6 +720,8 @@ public class Main {
                 recursoAtual = new Recurso(nomeRecurso, fornecedor, valor, quantidade);
             }
 
+            assert recursoAtual != null;
+            recursoAtual.setQuantidade(quantidade);
             recursos.add(recursoAtual);
 
             continuar = JOptionPane.showConfirmDialog(
@@ -787,11 +789,13 @@ public class Main {
                 residuoAtual = new Residuo(nomeResiduo, localDescarte, valor, quantidade);
             }
 
+            assert residuoAtual != null;
+            residuoAtual.setQuantidade(quantidade);
             residuos.add(residuoAtual);
 
             continuar = JOptionPane.showConfirmDialog(
                     null,
-                    "Deseja adicionar mais um recurso?",
+                    "Deseja adicionar mais um resíduo?",
                     "CONTINUAR?",
                     JOptionPane.YES_NO_OPTION
             );
