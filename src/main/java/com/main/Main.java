@@ -4,11 +4,12 @@ import com.inputusuario.CancelarOperacao;
 import com.inputusuario.InputUsuario;
 import com.tarefa.*;
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Main {
-    // TODO: criar classe de controle principal
 
     private final GerenciarTarefas gerenciarTarefas = new GerenciarTarefas();
     private final Configurador configurador = new Configurador();
@@ -19,7 +20,7 @@ public class Main {
     public static void main(String[] args) {
         main = new Main();
         main.configurador.lerConfiguracoes();
-        main.criarTarefa();
+        main.menuOpcoes();
     }
 
     public void mostrarTarefas() {
@@ -71,6 +72,14 @@ public class Main {
             tarefaAtual = gerenciarTarefas.pegarTarefaPeloNome(nomeTarefa);
             frameTarefas.dispose();
             gerenciarTarefa();
+        });
+
+        frameTarefas.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e){
+                super.windowClosed(e);
+                main.menuOpcoes();
+            }
         });
 
         frameTarefas.setVisible(true);
@@ -137,7 +146,7 @@ public class Main {
                         int opcaoEscolhida = JOptionPane.showConfirmDialog(
                                 null,
                                 "Não há resíduos salvos!",
-                                "ADICIOMAR?",
+                                "ADICIONAR?",
                                 JOptionPane.YES_NO_OPTION
                         );
 
@@ -596,15 +605,41 @@ public class Main {
         return nomes.toString();
     }
 
-    // TODO: mostra um menu de opções, que contará com opções numa caixa de diálogo para ver
-    //  tarefas, configuraçõese sair do programa
-    //  0 - ver tarefas
-    //  1 - configurações
-    //  2 - sair do programa
-    public int menuOpcoes() {
-        // return só pra não dá erro, mude
-        return 0;
+    public void menuOpcoes() {
+        String[] opcoes = {"Criar Tarefa", "Mostrar Tarefas", "Configurações", "Sair"};
+
+        int escolha = JOptionPane.showOptionDialog(
+                null,
+                "O que deseja fazer? ",
+                "ESCOLHA",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcoes,
+                opcoes[0]
+        );
+
+        switch (escolha) {
+
+            case 0 -> {
+                criarTarefa();
+                main.menuOpcoes();
+            }
+
+            case 1 -> mostrarTarefas();
+
+            case 2 -> {
+                configurador.mudarConfiguracoes();
+                main.menuOpcoes();
+            }
+
+            case 3 -> {
+                JOptionPane.showMessageDialog(null, "Finalizando programa");
+                System.exit(0);
+            }
+        }
     }
+
 
     private ArrayList<String> pegarFuncionarios() throws CancelarOperacao {
         ArrayList<String> funcionarios = new ArrayList<>();
