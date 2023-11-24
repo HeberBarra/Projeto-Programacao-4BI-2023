@@ -18,7 +18,6 @@ public class InputUsuario {
             if (input == null) {
                 int escolha = JOptionPane.showConfirmDialog(null, "Deseja cancelar?", "Cancelar?", JOptionPane.YES_NO_OPTION);
 
-                // Talvez mude, principal função desse enum é evitar erro de digitação
                 if (escolha == JOptionPane.YES_OPTION) throw new CancelarOperacao(OpcoesInput.CANCELAR.getValor());
 
                 continue;

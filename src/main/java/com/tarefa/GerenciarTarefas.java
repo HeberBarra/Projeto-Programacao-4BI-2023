@@ -55,15 +55,4 @@ public class GerenciarTarefas {
 
         return null;
     }
-
-    public int pegarTarefaPeloNome(String nomeTarefa, ArrayList<Tarefa> tarefas) {
-        for (int i = 0; i < tarefas.size(); i++) {
-            if (tarefas.get(i).getNome().equals(nomeTarefa)) {
-                return i;
-            }
-        }
-
-        // retorna -1 caso a tarefa não tenha sido encontrada
-        return -1;
-    }
 }
