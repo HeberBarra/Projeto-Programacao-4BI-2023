@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 // Classe pai das classes Recurso e Residuo,
 // criada para evitar repetição de código, pois ambas são muito parecidas
-class Material {
+public class Material {
     private String nome;
 
     // o valor é armazenado em centavos para maior precisão
@@ -65,5 +65,13 @@ class Material {
     public String calcularValorTotalString() {
         String centavos = String.valueOf(calcularValorTotal());
         return String.format("R$%s,%s", centavos.substring(0, centavos.length() - 2), centavos.substring(centavos.length() - 2));
+    }
+
+    public String getLocal() {
+        return "";
+    }
+
+    public String getNomeLocal() {
+        return "";
     }
 }
