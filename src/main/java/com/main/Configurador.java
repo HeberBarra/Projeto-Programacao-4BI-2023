@@ -34,7 +34,7 @@ public class Configurador {
         // Garante que o arquivo de configurações existe
         try (
             BufferedReader bufferedReader = new BufferedReader(new FileReader(ARQUIVO_DE_CONFIGURACOES));
-            FileWriter fileWriter = new FileWriter(ARQUIVO_DE_CONFIGURACOES)
+            FileWriter fileWriter = new FileWriter(ARQUIVO_DE_CONFIGURACOES, true)
         ) {
             logger.log(Level.INFO, String.valueOf(new File(ARQUIVO_DE_CONFIGURACOES.getParent()).mkdirs()));
             logger.log(Level.INFO, String.valueOf(ARQUIVO_DE_CONFIGURACOES.createNewFile()));
@@ -43,6 +43,22 @@ public class Configurador {
                 fileWriter.write("{}");
             }
 
+        } catch (IOException e) {
+            logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
+        }
+    }
+
+    public void salvarConfiguracoes() {
+        JSONObject configuracoesJson = new JSONObject();
+        configuracoesJson.put("nomeEmpresa", getNomeEmpresa());
+        configuracoesJson.put("tipoEmpresa", getTipoEmpresa());
+        configuracoesJson.put("fornecedores", getFornecedores());
+        configuracoesJson.put("locaisDescarte", getLocaisDescarte());
+        configuracoesJson.put("recursos", getRecursosJson());
+        configuracoesJson.put("residuos", getResiduosJson());
+
+        try(FileWriter fileWriter = new FileWriter(ARQUIVO_DE_CONFIGURACOES)) {
+            configuracoesJson.write(fileWriter, 4, 0);
         } catch (IOException e) {
             logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
         }
@@ -82,19 +98,7 @@ public class Configurador {
             return;
         }
 
-        JSONObject configuracoesJson = new JSONObject();
-        configuracoesJson.put("nomeEmpresa", getNomeEmpresa());
-        configuracoesJson.put("tipoEmpresa", getTipoEmpresa());
-        configuracoesJson.put("fornecedores", getFornecedores());
-        configuracoesJson.put("locaisDescarte", getLocaisDescarte());
-        configuracoesJson.put("recursos", getRecursosJson());
-        configuracoesJson.put("residuos", getResiduosJson());
-
-        try(FileWriter fileWriter = new FileWriter(ARQUIVO_DE_CONFIGURACOES)) {
-            configuracoesJson.write(fileWriter, 4, 0);
-        } catch (IOException e) {
-            logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
-        }
+        salvarConfiguracoes();
     }
 
     public void lerConfiguracoes() {
@@ -159,6 +163,8 @@ public class Configurador {
                     }
                 }
             }
+
+            salvarConfiguracoes();
         }
     }
 
