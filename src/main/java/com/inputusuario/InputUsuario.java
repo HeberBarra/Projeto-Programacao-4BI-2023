@@ -1,6 +1,9 @@
 package com.inputusuario;
 
+import com.tarefa.Status;
+
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -87,6 +90,78 @@ public class InputUsuario {
         return resposta;
     }
 
+    public Status escolhaDeLista(Status[] listaOpcoes, String nome) throws CancelarOperacao {
+        Status resposta;
+
+        while (true) {
+
+            resposta = (Status) JOptionPane.showInputDialog(
+                    null,
+                    String.format("Escolha um %s por favor: ", nome),
+                    "ESCOLHA",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    listaOpcoes,
+                    listaOpcoes[0]
+            );
+
+            if (resposta == null) {
+                int cancelar = JOptionPane.showConfirmDialog(
+                        null,
+                        "Deseja cancelar a operação?",
+                        "CANCELAR?",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (cancelar != JOptionPane.YES_OPTION) continue;
+
+                throw new CancelarOperacao(OpcoesInput.CANCELAR.getValor());
+            }
+
+            break;
+        }
+
+        return resposta;
+    }
+
+    public LocalDate tratarInputData() throws CancelarOperacao {
+        int dia, mes, ano;
+
+        while (true)
+        {
+            JOptionPane.showMessageDialog(null,"Digite a data de entrega\n DIA/MES/ANO ");
+            dia = this.tratarInputInt("Dia");
+            mes = this.tratarInputInt("Mês");
+            ano = this.tratarInputInt("Ano");
+
+            if( (dia >= 1 && dia <= 30) && (mes == 4 || mes == 6 ||mes == 9 || mes == 11 ) && (ano > 2000))
+            {
+                break;
+            }
+
+            else if ((dia >= 1 && dia <= 31) && (mes == 1 || mes == 3 || mes == 5 || mes == 7 || mes == 8 || mes == 10 || mes== 12) && (ano > 2000))
+            {
+                break;
+            }
+
+            else if( (dia >= 1 && dia <= 29) && (mes == 2 ) && (ano % 4 == 0))
+            {
+                break;
+            }
+
+            else  if( (dia >= 1 && dia <= 28) && (mes == 2 ) && ano > 2000)
+            {
+                break;
+            }
+
+            else
+            {
+                JOptionPane.showMessageDialog(null,"DATA INVÁLIDA", "ERRO" , JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        return LocalDate.of(ano, mes, dia);
+    }
 
     public String escolhaDeLista(ArrayList<String> listaOpcoes, String nome) throws CancelarOperacao {
         String[] opcoes = new String[listaOpcoes.size() + 1];
