@@ -135,7 +135,7 @@ public class Main {
                         continue;
                     }
 
-                    modificarMaterias(new ArrayList<>(tarefaAtual.getRecursos()));
+                    modificarMateriais(new ArrayList<>(tarefaAtual.getRecursos()));
                 }
 
                 // Mostrar Resíduos
@@ -162,7 +162,7 @@ public class Main {
                         continue;
                     }
 
-                    modificarMaterias(new ArrayList<>(tarefaAtual.getResiduos()));
+                    modificarMateriais(new ArrayList<>(tarefaAtual.getResiduos()));
                 }
 
                 // Salvar
@@ -185,7 +185,7 @@ public class Main {
         }
     }
 
-    private void modificarMaterias(ArrayList<Material> materiais) {
+    private void modificarMateriais(ArrayList<Material> materiais) {
         String tipoMaterial;
 
         if (materiais.get(0).getClass() == Recurso.class) {
@@ -194,13 +194,13 @@ public class Main {
             tipoMaterial = "Residuo";
         }
 
-        String[] opcoes = {"Voltar", "Modificar", "Adicionar", "Deletar", "Próximo", "Sair"};
+        String[] opcoes = {"Voltar", "Mudar Quantidade", "Adicionar", "Deletar", "Próximo", "Sair"};
 
         for (int i = 0; i < materiais.size(); i++) {
             int escolha = JOptionPane.showOptionDialog(
                     null,
                     String.format(
-                        "Nome: %s \n %s: %s Valor: %s \nQuantidade: %d \nTotal: %s",
+                        "Nome: %s \n%s: %s \nValor: %s \nQuantidade: %d \nTotal: %s",
                         materiais.get(i).getNome(),
                         materiais.get(i).getNomeLocal(),
                         materiais.get(i).getLocal(),
@@ -227,9 +227,24 @@ public class Main {
                     i -= 2;
                 }
 
-                // Modificar
+                // Mudar quantidade
                 case 1 -> {
+                    try {
+                        while (true) {
+                            int novaQuantidade = Integer.parseInt(inputUsuario.tratarInputString("Qual a nova quantidade? "));
 
+                            if (novaQuantidade < 1) {
+                                JOptionPane.showMessageDialog(null, "Deve-se adicionar ao menos um!");
+                                continue;
+                            }
+
+                            materiais.get(i).setQuantidade(novaQuantidade);
+                            break;
+                        }
+                    } catch (CancelarOperacao e) {
+                        JOptionPane.showMessageDialog(null, "Operação cancelada");
+                        return;
+                    }
                 }
 
 
