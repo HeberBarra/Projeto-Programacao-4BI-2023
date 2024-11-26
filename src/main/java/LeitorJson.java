@@ -1,12 +1,27 @@
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class LeitorJson {
      public JSONObject lerArquivo(String caminhoArquivo) {
-          // TODO: terminar método que lê um determinado arquivo JSON
-          //  e retorna seus valores em um JSONObject
-          JSONObject arquivoJSON = new JSONObject();
+          File file = new File(caminhoArquivo);
 
-          // return só pra não dá erro, mude
-          return arquivoJSON;
+          String conteudo;
+          try (FileReader fileReader = new FileReader(file)) {
+               conteudo = new String(Files.readAllBytes(file.toPath()));
+          } catch (IOException e) {
+               Logger logger = Logger.getLogger(LeitorJson.class.getName());
+               logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
+               return new JSONObject();
+          }
+
+         return new JSONObject(conteudo);
      }
 }
+
