@@ -1,5 +1,7 @@
 package Tarefa;
 
+import org.json.JSONObject;
+
 class Material {
     private String nome;
     private long valor;
@@ -42,6 +44,14 @@ class Material {
 
     public long calcularValorTotal() {
         return quantidade * valor;
+    }
+
+    public JSONObject getValoresJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("nome", nome);
+        jsonObject.put("valor", valor);
+        jsonObject.put("quantidade", quantidade);
+        return jsonObject;
     }
 
     public String calcularValorTotalString() {

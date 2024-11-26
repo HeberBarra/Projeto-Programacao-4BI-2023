@@ -1,5 +1,7 @@
 package Tarefa;
 
+import org.json.JSONObject;
+
 public class Residuo extends Material {
     private String localDiscarte;
 
@@ -14,5 +16,12 @@ public class Residuo extends Material {
 
     public void setLocalDiscarte(String novoLocalDiscarte) {
         this.localDiscarte = novoLocalDiscarte;
+    }
+
+    @Override
+    public JSONObject getValoresJSON() {
+        JSONObject jsonObject = super.getValoresJSON();
+        jsonObject.put("localDiscarte", localDiscarte);
+        return jsonObject;
     }
 }
