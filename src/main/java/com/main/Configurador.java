@@ -16,7 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Configurador {
-    private final File  ARQUIVO_DE_CONFIGURACOES = new File("src/main/resources/config/config.json");
+    private final File ARQUIVO_DE_CONFIGURACOES = new File("src/main/resources/config/config.json");
+    private final File PASTA_CONFIGURACOES = new File("src/main/resources/config/");
     private final Logger logger = Logger.getLogger(Configurador.class.getName());
     private final InputUsuario inputUsuario = new InputUsuario();
     private final LeitorJson leitorJson = new LeitorJson();
@@ -28,18 +29,21 @@ public class Configurador {
     private ArrayList<String> locaisDescarte = new ArrayList<>();
     
     public Configurador() {
-        // Garante que o arquivo de configurações existe
+        try {
+            // Garante que o arquivo de configurações existe
+            logger.log(Level.INFO, String.valueOf(PASTA_CONFIGURACOES.mkdirs()));
+            logger.log(Level.INFO, String.valueOf(ARQUIVO_DE_CONFIGURACOES.createNewFile()));
+        } catch (IOException e) {
+            logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
+        }
+
         try (
             BufferedReader bufferedReader = new BufferedReader(new FileReader(ARQUIVO_DE_CONFIGURACOES));
             FileWriter fileWriter = new FileWriter(ARQUIVO_DE_CONFIGURACOES, true)
         ) {
-            logger.log(Level.INFO, String.valueOf(new File(ARQUIVO_DE_CONFIGURACOES.getParent()).mkdirs()));
-            logger.log(Level.INFO, String.valueOf(ARQUIVO_DE_CONFIGURACOES.createNewFile()));
-
             if (bufferedReader.readLine() == null) {
-                fileWriter.write("{}");
+               fileWriter.write("{}");
             }
-
         } catch (IOException e) {
             logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
         }
