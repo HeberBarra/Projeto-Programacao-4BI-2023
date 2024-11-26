@@ -1,6 +1,6 @@
-package Tarefa;
+package com.tarefa;
 
-import LeitorJson.LeitorJson;
+import com.leitorjson.LeitorJson;
 
 import java.io.File;
 import java.util.ArrayList;

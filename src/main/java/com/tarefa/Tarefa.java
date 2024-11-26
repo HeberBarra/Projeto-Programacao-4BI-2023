@@ -1,4 +1,4 @@
-package Tarefa;
+package com.tarefa;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

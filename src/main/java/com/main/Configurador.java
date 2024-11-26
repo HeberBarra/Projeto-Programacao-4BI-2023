@@ -1,8 +1,8 @@
 package com.main;
 
-import InputUsuario.InputUsuario;
-import Tarefa.Recurso;
-import Tarefa.Residuo;
+import com.inputusuario.InputUsuario;
+import com.tarefa.Recurso;
+import com.tarefa.Residuo;
 
 import javax.swing.JOptionPane;
 import java.io.File;

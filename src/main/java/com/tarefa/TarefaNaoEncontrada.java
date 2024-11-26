@@ -1,4 +1,4 @@
-package Tarefa;
+package com.tarefa;
 
 public class TarefaNaoEncontrada extends Exception {
 
