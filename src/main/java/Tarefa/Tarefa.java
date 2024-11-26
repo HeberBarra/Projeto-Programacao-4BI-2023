@@ -114,4 +114,8 @@ public class Tarefa {
     public void setDataDeEntrega(LocalDate dataDeEntrega) {
         this.dataDeEntrega = dataDeEntrega;
     }
+
+    public int calcularPrazo() {
+        return LocalDate.now().until(dataDeEntrega).getDays();
+    }
 }
