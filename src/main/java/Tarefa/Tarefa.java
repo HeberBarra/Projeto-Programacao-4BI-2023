@@ -30,12 +30,15 @@ public class Tarefa {
         this.dataDeEntrega = dataDeEntrega;
     }
 
+    // Construtor alternativo que pega as informações de um arquivo JSON
     public Tarefa(String caminhoArquivo, JSONObject tarefaJSON) {
+        // Separa o caminho em partes, pega a última parte, 
+        // e retira a extensão .json para obter o nome da tarefa
         String[] partesCaminho = caminhoArquivo.split("/");
         String nomeArquivo = partesCaminho[partesCaminho.length - 1];
         this.nome = nomeArquivo.substring(0, nomeArquivo.length() - 5);
 
-        System.out.println(tarefaJSON);
+        // Criar listas que pussuem valores pré-definidos para melhor controle das chaves
         List<String> chavesTarefa = Arrays.stream(new String[]{"status", "funcionarios", "recursos", "residuos", "dataDeEntrega"}).toList();
         List<String> chavesMaterial = Arrays.stream(new String[]{"nome", "valor", "quantidade"}).toList();
         ArrayList<String> chavesRecurso = new ArrayList<>(List.copyOf(chavesMaterial));
@@ -43,6 +46,7 @@ public class Tarefa {
         ArrayList<String> chavesResiduo = new ArrayList<>(List.copyOf(chavesMaterial));
         chavesResiduo.add(1, "localDiscarte");
 
+        // HashMap que possui Strings e seus status equivalentes
         HashMap<String, Status> statusHashMap = new HashMap<>();
         statusHashMap.put("EM_ANDAMENTO", Status.EM_ANDAMENTO);
         statusHashMap.put("CONCLUIDO", Status.CONCLUIDO);
@@ -50,13 +54,19 @@ public class Tarefa {
         statusHashMap.put("NAO_CONFORME", Status.NAO_CONFORME);
         statusHashMap.put("REPROVADO", Status.REPROVADO);
 
+        // percore todas as chaves que foram pegas do arquivo passado
         for (var key: tarefaJSON.keySet()) {
             var valorJson = tarefaJSON.get(key);
 
             switch (key) {
+                // como a as ordens não possuem uma ordem definida exata,
+                // é necessário fazer uma seleção para executar um código baseado na informação
 
+                // type cast é necessário, pois o compilador não sabe o tipo exato do valor
+                // convertamos valorJson para String e salvamos o status equivalente 
                 case "status" -> status = statusHashMap.get((String) valorJson);
 
+                // lê os funcionários salvos no arquivo e depois salvar no ArrayList da Tarefa
                 case "funcionarios" -> {
                     ArrayList<String> funcionarios = new ArrayList<>();
 
@@ -67,21 +77,31 @@ public class Tarefa {
                     this.funcionarios = funcionarios;
                 }
 
+                // Os cases recursos e residuos tem funcionamentos parecidos. 
                 case "recursos" -> {
+                    // ArrayList para salvar as informações
                     ArrayList<Recurso> recursos = new ArrayList<>();
+
+                    // como os recursos ficam salvos numa lista dentro do salvo 
+                    // é necessário percorrê-la para pegar cada um deles
                     for (int i = 0; i < ((JSONArray) valorJson).length(); i++) {
+                        // pega o objeto do index atual
                         JSONObject recurso = (JSONObject) ((JSONArray) valorJson).get(i);
+                        
+                        // pega cada uma das informações do objeto
                         String nome = (String) recurso.get(chavesRecurso.get(0));
                         String fornecedor = (String) recurso.get(chavesRecurso.get(1));
                         long valor = (int) recurso.get(chavesRecurso.get(2));
                         int quantidade = (int) recurso.get(chavesRecurso.get(3));
 
+                        // adiciona a ArrayList um objeto Recurso que as informações obtidas
                         recursos.add(new Recurso(nome, fornecedor, valor, quantidade));
                     }
 
                     this.recursos = recursos;
                 }
 
+                // basicamente o mesmo funcionamento da case anterior só que com a classe Residuo
                 case "residuos" -> {
                     ArrayList<Residuo> residuos = new ArrayList<>();
                     for (int i = 0; i < ((JSONArray) valorJson).length(); i++) {
@@ -96,6 +116,9 @@ public class Tarefa {
                     this.residuos = residuos;
                 }
 
+                // a data de entrega é salva no formato iso, AAAA-MM-DD(A = ano, M = mês, D = dia),
+                // separamos a data em ano, mês e dia e depois passamos para o método of do LocalDate
+                // para criar um objeto de data
                 case "dataDeEntrega" -> {
                     String[] partesData = ((String) valorJson).split("-");
                     this.dataDeEntrega = LocalDate.of(Integer.parseInt(partesData[0]), Integer.parseInt(partesData[1]), Integer.parseInt(partesData[2]));
