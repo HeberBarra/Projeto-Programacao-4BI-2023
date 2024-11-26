@@ -69,7 +69,7 @@ public class Main {
 
         cellSelectionModel.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) return;
-
+            
             flag.set(true);
             int linhaSelecionada = table.getSelectedRow();
             String nomeTarefa = (String) table.getValueAt(linhaSelecionada, 0);
