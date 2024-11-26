@@ -10,6 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
+        main.configurador.lerConfiguracoes();
     }
 
     // TODO: método que mostrar todas as tarefas em forma de lista,
