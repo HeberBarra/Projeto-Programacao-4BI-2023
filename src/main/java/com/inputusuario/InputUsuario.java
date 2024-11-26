@@ -39,6 +39,21 @@ public class InputUsuario {
         }
     }
 
+    public int tratarInputInt(String mensagem) throws CancelarOperacao {
+        String input = tratarInputString(mensagem);
+        int inputInt;
+        while (true) {
+            try {
+                inputInt = Integer.parseInt(input);
+                break;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Digite um valor válido!");
+            }
+        }
+
+        return inputInt;
+    }
+
     public String escolhaDeLista(String[] listaOpcoes, String nome) throws CancelarOperacao {
         String resposta;
 
