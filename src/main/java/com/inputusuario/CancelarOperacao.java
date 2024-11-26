@@ -6,6 +6,10 @@ public class CancelarOperacao extends Exception {
         this.mensagem = mensagem;
     }
 
+    public CancelarOperacao() {
+        this.mensagem = OpcoesInput.CANCELAR.getValor();
+    }
+
     public String getMensagem() {
         return mensagem;
     }
