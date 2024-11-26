@@ -28,6 +28,8 @@ public class Tarefa {
         this.dataDeEntrega = dataDeEntrega;
     }
 
+    // salvas todas as informações essencias da tarefa, numa estrutura JSON
+    // e depois escreve num arquivo com o nome da tarefa e com a extensão json
     public void salvarTarefa() {
         JSONObject jsonTarefa = new JSONObject();
 
@@ -73,6 +75,9 @@ public class Tarefa {
         return recursos;
     }
 
+    // percorre o ArrayList que armazena os recursos
+    // e utiliza o método getValoresJSON de cada para pegar suas informações
+    // e armazena numa estrutura JSON
     public JSONArray getRecursosJSON() {
         JSONArray jsonArray = new JSONArray();
         for (var recurso: recursos) {
@@ -90,6 +95,9 @@ public class Tarefa {
         return residuos;
     }
 
+    // percorre o ArrayList que armazena os resíduos
+    // e utiliza o método getValoresJSON de cada para pegar suas informações
+    // e armazena numa estrutura JSON
     public JSONArray getResiduosJSON() {
         JSONArray jsonArray = new JSONArray();
         for (var residuo: residuos) {
@@ -115,6 +123,8 @@ public class Tarefa {
         this.dataDeEntrega = dataDeEntrega;
     }
 
+    // calcula o prazo em dias, da data atual até a data salva.
+    // Se a data já passou, os dias ficarão negativos
     public int calcularPrazo() {
         return LocalDate.now().until(dataDeEntrega).getDays();
     }
