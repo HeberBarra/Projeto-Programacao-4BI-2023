@@ -40,12 +40,12 @@ public class GerenciarTarefas {
         logger.log(Level.INFO, String.valueOf(arquivoTarefa.delete()));
     }
 
-    public Tarefa pegarTarefaPeloNome(String nomeTarefa) throws TarefaNaoEncontrada {
+    public Tarefa pegarTarefaPeloNome(String nomeTarefa) {
         File[] arquivosTarefa = pastaTarefas.listFiles();
 
         // TarefaNaoEncontrada é uma classe que herda da classe Exception.
         // Criado para deixar a exceção mais fácil de entender
-        if (arquivosTarefa == null) throw new TarefaNaoEncontrada("Arquivo não encontrado");
+        if (arquivosTarefa == null) return null;
 
         for (var arquivo: arquivosTarefa) {
             if (arquivo.getName().equals(nomeTarefa + ".json")) {
@@ -53,7 +53,7 @@ public class GerenciarTarefas {
             }
         }
 
-        throw new TarefaNaoEncontrada("Arquivo não encontrado");
+        return null;
     }
 
     public int pegarTarefaPeloNome(String nomeTarefa, ArrayList<Tarefa> tarefas) {

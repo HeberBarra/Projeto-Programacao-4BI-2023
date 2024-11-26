@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
         main = new Main();
         main.configurador.lerConfiguracoes();
-        main.mostrarTarefas();
+        main.criarTarefa();
     }
 
     public void mostrarTarefas() {
@@ -68,18 +68,14 @@ public class Main {
             int linhaSelecionada = table.getSelectedRow();
             String nomeTarefa = (String) table.getValueAt(linhaSelecionada, 0);
 
-            try {
-                tarefaAtual = gerenciarTarefas.pegarTarefaPeloNome(nomeTarefa);
-                frameTarefas.dispose();
-                gerenciarTarefa();
-            } catch (TarefaNaoEncontrada ex) {
-                throw new RuntimeException(ex);
-            }
+            tarefaAtual = gerenciarTarefas.pegarTarefaPeloNome(nomeTarefa);
+            frameTarefas.dispose();
+            gerenciarTarefa();
         });
 
         frameTarefas.setVisible(true);
     }
-    
+
     public void gerenciarTarefa() {
         String[] opcoes = {"Voltar", "Modificar", "Mostrar Recursos", "Mostrar Resíduos", "Salvar", "Excluir"};
 
@@ -608,5 +604,204 @@ public class Main {
     public int menuOpcoes() {
         // return só pra não dá erro, mude
         return 0;
+    }
+
+    private ArrayList<String> pegarFuncionarios() throws CancelarOperacao {
+        ArrayList<String> funcionarios = new ArrayList<>();
+
+        int continuar;
+        do {
+            funcionarios.add(inputUsuario.tratarInputString("Qual o nome do funcionário? "));
+            continuar = JOptionPane.showConfirmDialog(
+                    null,
+                    "Deseja adicionar mais um funcionário?",
+                    "CONTINUAR?",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+        } while (continuar == JOptionPane.YES_OPTION);
+
+        return funcionarios;
+    }
+
+    private ArrayList<Recurso> pegarRecursos() throws CancelarOperacao {
+        ArrayList<Recurso> recursos = new ArrayList<>();
+        ArrayList<String> nomesRecursos = new ArrayList<>();
+        Recurso recursoAtual = null;
+
+        for (var recurso: configurador.getRecursos()) {
+            nomesRecursos.add(recurso.getNome());
+        }
+
+        int continuar;
+        do {
+            String nomeRecurso = inputUsuario.escolhaDeLista(nomesRecursos, "recurso");
+
+            for (int i = 0; i < nomesRecursos.size(); i++) {
+                if (nomesRecursos.contains(nomeRecurso)) {
+                    var recursoEscolhido = configurador.getRecursos().get(i);
+                    if (!recursos.contains(recursoEscolhido)) {
+                        recursoAtual = recursoEscolhido;
+                        break;
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Recurso já foi adicionado!");
+                    break;
+                }
+            }
+
+            String fornecedor = null;
+            long valor = -1;
+            if (nomeRecurso.equals("outro")) {
+                fornecedor = inputUsuario.escolhaDeLista(configurador.getFornecedores(), "fornecedor");
+
+                if (fornecedor.equals("outro")) {
+                    fornecedor = inputUsuario.tratarInputString("Qual o fornecedor? ");
+                }
+
+                valor = inputUsuario.tratarInputInt("Qual o valor? ");
+            }
+
+            int quantidade;
+            while (true) {
+                quantidade = inputUsuario.tratarInputInt("Qual a quantidade? ");
+
+                if (quantidade < 1) {
+                    JOptionPane.showMessageDialog(null, "Deve-se adicionar ao menos um");
+                    continue;
+                }
+
+                break;
+            }
+
+            if (fornecedor != null && valor != -1) {
+                recursoAtual = new Recurso(nomeRecurso, fornecedor, valor, quantidade);
+            }
+
+            recursos.add(recursoAtual);
+
+            continuar = JOptionPane.showConfirmDialog(
+                    null,
+                    "Deseja adicionar mais um recurso?",
+                    "CONTINUAR?",
+                    JOptionPane.YES_NO_OPTION
+            );
+        } while (continuar == JOptionPane.YES_OPTION);
+
+        return recursos;
+    }
+
+    private ArrayList<Residuo> pegarResiduos() throws CancelarOperacao {
+        ArrayList<Residuo> residuos = new ArrayList<>();
+        ArrayList<String> nomesResiduos = new ArrayList<>();
+        Residuo residuoAtual = null;
+
+        for (var residuo: configurador.getResiduos()) {
+            nomesResiduos.add(residuo.getNome());
+        }
+
+        int continuar;
+        do {
+            String nomeResiduo = inputUsuario.escolhaDeLista(nomesResiduos, "resíduo");
+
+            for (int i = 0; i < nomesResiduos.size(); i++) {
+                if (nomesResiduos.contains(nomeResiduo)) {
+                    var residuoEscolhido = configurador.getResiduos().get(i);
+                    if (!residuos.contains(residuoEscolhido)) {
+                        residuoAtual = residuoEscolhido;
+                        break;
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Resíduo já foi adicionado!");
+                    break;
+                }
+            }
+
+            String localDescarte = null;
+            long valor = -1;
+            if (nomeResiduo.equals("outro")) {
+                localDescarte = inputUsuario.escolhaDeLista(configurador.getLocaisDescarte(), "local de descarte");
+
+                if (localDescarte.equals("outro")) {
+                    localDescarte = inputUsuario.tratarInputString("Qual o local de descarte? ");
+                }
+
+                valor = inputUsuario.tratarInputInt("Qual o valor? ");
+            }
+
+            int quantidade;
+            while (true) {
+                quantidade = inputUsuario.tratarInputInt("Qual a quantidade? ");
+
+                if (quantidade < 1) {
+                    JOptionPane.showMessageDialog(null, "Deve-se adicionar ao menos um");
+                    continue;
+                }
+
+                break;
+            }
+
+            if (localDescarte != null && valor != -1) {
+                residuoAtual = new Residuo(nomeResiduo, localDescarte, valor, quantidade);
+            }
+
+            residuos.add(residuoAtual);
+
+            continuar = JOptionPane.showConfirmDialog(
+                    null,
+                    "Deseja adicionar mais um recurso?",
+                    "CONTINUAR?",
+                    JOptionPane.YES_NO_OPTION
+            );
+        } while (continuar == JOptionPane.YES_OPTION);
+
+        return residuos;
+    }
+
+    private void criarTarefa() {
+        try {
+            String nomeTarefa = inputUsuario.tratarInputString("Qual o nome da tarefa? ");
+
+            if (gerenciarTarefas.pegarTarefaPeloNome(nomeTarefa) != null) {
+                JOptionPane.showMessageDialog(null, "Tarefa já existe.");
+                return;
+            }
+
+            LocalDate data = inputUsuario.tratarInputData();
+            ArrayList<String> funcionarios = pegarFuncionarios();
+            ArrayList<Residuo> residuos = new ArrayList<>();
+            ArrayList<Recurso> recursos = new ArrayList<>();
+
+            int adicionar;
+
+            adicionar = JOptionPane.showConfirmDialog(
+                    null,
+                    "Deseja adicionar recursos?",
+                    "ADICIONAR RECURSOS",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (adicionar == JOptionPane.YES_OPTION) {
+                recursos = pegarRecursos();
+            }
+
+            adicionar = JOptionPane.showConfirmDialog(
+                    null,
+                    "Deseja adicionar resíduos?",
+                    "ADICIONAR RECURSOS",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (adicionar == JOptionPane.YES_OPTION) {
+                residuos = pegarResiduos();
+            }
+
+            tarefaAtual = new Tarefa(nomeTarefa, funcionarios, recursos, residuos, data);
+            tarefaAtual.salvarTarefa();
+
+        } catch (CancelarOperacao e) {
+            JOptionPane.showMessageDialog(null, "Operação cancelada!");
+        }
+
     }
 }
