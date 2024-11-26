@@ -8,8 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GerenciarTarefas {
-    // TODO: criar classe para o gerenciamento de tarefas, listagem, exclução, gerenciamento, etc.
-    private final File pastaTarefas = new File("src/main/resources/tarefas/");
+    private final File pastaTarefas = new File("tarefas/");
     private final LeitorJson leitorJson = new LeitorJson();
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
