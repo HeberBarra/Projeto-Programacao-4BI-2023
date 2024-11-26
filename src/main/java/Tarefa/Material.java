@@ -1,15 +1,12 @@
 package Tarefa;
 
-public class Material {
-
+class Material {
     private String nome;
-    private String fornecedor;
     private long valor;
     private int quantidade;
 
-    public Material(String nome, String fornecedor,long valor, int quantidade) {
+    public Material(String nome, long valor, int quantidade) {
         this.nome = nome;
-        this.fornecedor = fornecedor;
         this.valor = valor;
         this.quantidade = quantidade;
     }
@@ -18,43 +15,37 @@ public class Material {
         return nome;
     }
 
-    public void setNome(String novoNome) {
-        this.nome = novoNome;
-    }
-
-    public String getFornecedor() {
-        return fornecedor;
-    }
-
-    public void setFornecedor(String novoFornecedor) {
-        this.fornecedor = novoFornecedor;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public long getValor() {
         return valor;
     }
 
-    public String getStringValor() {
-        return String.valueOf(valor);
+    public String getValorString() {
+        String centavos = String.valueOf(valor);
+        return String.format("R$%s,%s", centavos.substring(0, centavos.length() - 2), centavos.substring(centavos.length() - 2));
     }
 
-    public void setValor(long novoValor) {
-        this.valor = novoValor;
-    }
-
-    public void setValor(String novoValor) {
-        this.valor = Long.parseLong(novoValor) * 100;
+    public void setValor(int valor) {
+        this.valor = valor;
     }
 
     public int getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(int novoQuantidade) {
-        this.quantidade = novoQuantidade;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
-    public long calcularPrecoTotal() {
+    public long calcularValorTotal() {
         return quantidade * valor;
+    }
+
+    public String calcularValorTotalString() {
+        String centavos = String.valueOf(calcularValorTotal());
+        return String.format("R$%s,%s", centavos.substring(0, centavos.length() - 2), centavos.substring(centavos.length() - 2));
     }
 }
