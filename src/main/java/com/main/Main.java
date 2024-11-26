@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
 
@@ -26,6 +27,9 @@ public class Main {
     public void mostrarTarefas() {
         final int FRAME_WIDTH = 1200;
         final int FRAME_HEIGHT = 700;
+        // Atomic permite um compartilhamento seguro de um valor de uma variável. Principalmente entre threads.
+        // Necessário para poder passar o valor para o método do WindowAdapter
+        AtomicBoolean flag = new AtomicBoolean(false);
 
         ArrayList<Tarefa> tarefas = gerenciarTarefas.lerArquivosTarefas();
         JFrame frameTarefas = new JFrame();
@@ -66,6 +70,7 @@ public class Main {
         cellSelectionModel.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) return;
 
+            flag.set(true);
             int linhaSelecionada = table.getSelectedRow();
             String nomeTarefa = (String) table.getValueAt(linhaSelecionada, 0);
 
@@ -78,7 +83,9 @@ public class Main {
             @Override
             public void windowClosed(WindowEvent e){
                 super.windowClosed(e);
-                main.menuOpcoes();
+                if (!flag.get()) {
+                    main.menuOpcoes();
+                }
             }
         });
 
