@@ -6,6 +6,7 @@ public class Main {
     // TODO: criar classe de controle principal
 
     private final GerenciarTarefas gerenciarTarefas = new GerenciarTarefas();
+    private final Configurador configurador = new Configurador();
 
     public static void main(String[] args) {
         Main main = new Main();
