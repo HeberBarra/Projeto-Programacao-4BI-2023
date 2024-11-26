@@ -39,7 +39,6 @@ public class Tarefa {
         this.nome = nomeArquivo.substring(0, nomeArquivo.length() - 5);
 
         // Criar listas que possuem valores pré-definidos para melhor controle das chaves
-        List<String> chavesTarefa = Arrays.stream(new String[]{"status", "funcionarios", "recursos", "residuos", "dataDeEntrega"}).toList();
         List<String> chavesMaterial = Arrays.stream(new String[]{"nome", "valor", "quantidade"}).toList();
         ArrayList<String> chavesRecurso = new ArrayList<>(List.copyOf(chavesMaterial));
         chavesRecurso.add(1, "fornecedor");
