@@ -2,14 +2,13 @@ package com.main;
 
 import com.inputusuario.CancelarOperacao;
 import com.inputusuario.InputUsuario;
-import com.inputusuario.OpcoesInput;
 import com.leitorjson.LeitorJson;
 import com.tarefa.Recurso;
 import com.tarefa.Residuo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -115,45 +114,57 @@ public class Configurador {
         lerResiduos(jsonData.getJSONArray("residuos"));
     }
 
-    public void mudarConfiguracoes() throws CancelarOperacao {
-        String[] opcoesConfiguracoes = {
-                "Nome da Empresa",
-                "Tipo da Empresa",
-                "Fornecedores",
-                "Locais de Descarte",
-                "Recursos",
-                "Resíduos"
-        };
+    public void mudarConfiguracoes() {
+        while (true) {
+            String[] opcoesConfiguracoes = {
+                    "Nome da Empresa",
+                    "Tipo da Empresa",
+                    "Fornecedores",
+                    "Locais de Descarte",
+                    "Recursos",
+                    "Resíduos"
+            };
 
-        String escolha = (String) JOptionPane.showInputDialog(
-                null,
-                "Escolha uma configuração por favor",
-                "ESCOLHA UM",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                opcoesConfiguracoes,
-                opcoesConfiguracoes[0]
-        );
+            String escolha;
+            try {
+                escolha = inputUsuario.escolhaDeLista(opcoesConfiguracoes, "Configuração");
+            } catch (CancelarOperacao e) {
+                JOptionPane.showMessageDialog(null, "Operação cancelada");
+                return;
+            }
 
-        switch (escolha) {
-            case "Nome da Empresa" -> mudarNome();
-            
-            case "Tipo da Empresa" -> mudarTipo();
-            
-            case "Fornecedores" -> mudarFornecedores();
-            
-            case "Locais de Descarte" -> mudarLocaisDescarte();
-            
-            default -> {
-                int sair = JOptionPane.showConfirmDialog(null, "Deseja sair?", "SAIR?", JOptionPane.YES_NO_OPTION);
-                if (sair == JOptionPane.YES_OPTION) throw new CancelarOperacao();
+            switch (escolha) {
+                case "Nome da Empresa" -> mudarNome();
+
+                case "Tipo da Empresa" -> mudarTipo();
+
+                case "Fornecedores" -> mudarFornecedores();
+
+                case "Locais de Descarte" -> mudarLocaisDescarte();
+
+                case "Recursos" -> mudarRecursos();
+
+                case "Resíduos" -> mudarResiduos();
+
+                default -> {
+                    int sair = JOptionPane.showConfirmDialog(null, "Deseja sair?", "SAIR?", JOptionPane.YES_NO_OPTION);
+                    if (sair == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(null, "Operação cancelada");
+                    }
+                }
             }
         }
     }
 
-    private ArrayList<String> mudarListaString(ArrayList<String> listaInformacoes, String nomeLista, String nomeIndividual) throws CancelarOperacao {
-        // StringBuilder informacoes = new StringBuilder();
-        String[] opcoesInformacoes = new String[listaInformacoes.size()];
+    private ArrayList<String> mudarListaString(ArrayList<String> listaInformacoes, String nomeIndividual) throws CancelarOperacao {
+        StringBuilder informacoes = new StringBuilder();
+
+        for (int i = 0; i < listaInformacoes.size(); i++) {
+            informacoes.append(String.format("%d - %s\n", i, listaInformacoes.get(i)));
+        }
+
+        JOptionPane.showMessageDialog(null, informacoes.toString());
+
         String[] opcoesIndividuais = {
                 "Apagar um " + nomeIndividual,
                 "Mudar um " + nomeIndividual,
@@ -197,7 +208,7 @@ public class Configurador {
 
     private void mudarFornecedores() {
         try {
-            setFornecedores(mudarListaString(fornecedores, "fornecedores", "fornecedor"));
+            setFornecedores(mudarListaString(fornecedores, "fornecedor"));
         } catch (CancelarOperacao e) {
             JOptionPane.showMessageDialog(null, "Operação Cancelada.");
         }
@@ -205,7 +216,7 @@ public class Configurador {
 
     private void mudarLocaisDescarte() {
         try {
-            setLocaisDescarte(mudarListaString(locaisDescarte, "locais de descarte", "local de descarte"));
+            setLocaisDescarte(mudarListaString(locaisDescarte, "local de descarte"));
         } catch (CancelarOperacao e) {
             JOptionPane.showMessageDialog(null, "Operação Cancelada.");
         }
@@ -214,7 +225,7 @@ public class Configurador {
     private String mudarString(String nomeValor, String valor) throws CancelarOperacao {
         int mudar = JOptionPane.showConfirmDialog(
                 null,
-                String.format("%s atual %s. Deseja mudá-lo", nomeValor, valor),
+                String.format("%s atual %s. Deseja mudá-lo?", nomeValor, valor),
                 "ESCOLHA UM",
                 JOptionPane.YES_NO_OPTION
         );
@@ -238,6 +249,147 @@ public class Configurador {
         } catch (CancelarOperacao e) {
             JOptionPane.showMessageDialog(null, "Mudança cancelada.");
         }
+    }
+
+    private void mudarMateriais(ArrayList<String[]> informacoesMateriais, String tipoMaterial, String nomeChaveLocal, ArrayList<String> locais) {
+        String[] botoesMenuUm = {"criar", "visualizar", "sair"};
+        String[] botoesMenuDois = {"anterior", "próximo", "modificar", "deletar", "sair"};
+
+        while (true) {
+            int opcaoEscolhidaMenuUm = JOptionPane.showOptionDialog(
+                    null,
+                    "O que deseja fazer?",
+                    "ESCOLHA",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    botoesMenuUm,
+                    botoesMenuUm[0]
+            );
+
+            if (opcaoEscolhidaMenuUm == 0) {
+                try {
+                    String nome = inputUsuario.tratarInputString(String.format("Qual o nome do novo %s?", tipoMaterial));
+
+                    String local = inputUsuario.escolhaDeLista(locaisDescarte, nomeChaveLocal);
+
+                    if (local.equals("outro")) {
+                        local = inputUsuario.tratarInputString(String.format("Qual o %s do novo %s?", nomeChaveLocal, tipoMaterial));
+                    }
+
+                    String custo = inputUsuario.tratarInputString(String.format("Qual o custo do novo %s?", tipoMaterial));
+
+                    informacoesMateriais.add(new String[]{nome, local, custo});
+
+                } catch (CancelarOperacao e) {
+                    JOptionPane.showMessageDialog(null, "Operação cancelada");
+                }
+            }
+
+            if (opcaoEscolhidaMenuUm == 2) {
+                return;
+            }
+
+            // label. utilizado para poder utilizar o break para sair do loop mesmo dentro do switch
+            loopFor:
+            for (int i = 0; i < informacoesMateriais.size(); i++) {
+                String[] informacoes = informacoesMateriais.get(i);
+                int escolha = JOptionPane.showOptionDialog(
+                        null,
+                        String.format("Nome: %s \n%s: %s \nCusto: %s", informacoes[0], nomeChaveLocal, informacoes[1], informacoes[2]),
+                        "ESCOLHA",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        botoesMenuDois,
+                        botoesMenuDois[0]
+                );
+
+                switch (escolha) {
+                    case 0 -> {
+                        // Anterior
+                        if (i == 0) {
+                            i = informacoesMateriais.size() - 2;
+                            continue;
+                        }
+
+                        i -= 2;
+                    }
+
+                    case 1 -> {
+                        // Próximo
+                        if (i == informacoesMateriais.size() - 1) {
+                            i = -1;
+                        }
+                    }
+
+                    case 2 -> {
+                        // Modificar
+                        try {
+                            String valorEscolhido = inputUsuario.escolhaDeLista(new String[]{"nome", nomeChaveLocal, "custo"}, tipoMaterial);
+
+
+
+                            if (valorEscolhido.equals("nome")) {
+                                String novo = inputUsuario.tratarInputString(String.format("Qual o novo %s", valorEscolhido));
+                                informacoes[0] = novo;
+                            } else if (valorEscolhido.equals(nomeChaveLocal)) {
+                                String novo = inputUsuario.escolhaDeLista(locais, nomeChaveLocal);
+
+                                if (novo.equals("outro")) {
+                                    novo = inputUsuario.tratarInputString(String.format("Qual o novo %s", valorEscolhido));
+                                }
+
+                                informacoes[1] = novo;
+                            } else if (valorEscolhido.equals("custo")) {
+                                String novo = inputUsuario.tratarInputString(String.format("Qual o novo %s", valorEscolhido));
+                                informacoes[2] = novo;
+                            } else {
+                                int opcaoEscolhida = JOptionPane.showConfirmDialog(null, "Opção Inválida! Tentar novamente?");
+                                if (opcaoEscolhida != JOptionPane.YES_OPTION) {
+                                    throw new CancelarOperacao();
+                                }
+                            }
+
+                        } catch (CancelarOperacao e) {
+                            JOptionPane.showMessageDialog(null, "Operação cancelada");
+                            return;
+                        }
+                    }
+
+                    case 3 -> {
+                        // Deletar
+                        informacoesMateriais.remove(i);
+                        break loopFor;
+                    }
+
+                    case 4 -> {
+                        // Sair
+                        break loopFor;
+                    }
+                }
+            }
+        }
+    }
+
+    private void mudarRecursos() {
+        ArrayList<String[]> recursosArray = new ArrayList<>();
+
+        for (var recurso: recursos) {
+            recursosArray.add(new String[]{recurso.getNome(), recurso.getFornecedor(), String.valueOf(recurso.getValor())});
+        }
+
+        mudarMateriais(recursosArray, "recurso", "fornecedor", fornecedores);
+    }
+
+    private void mudarResiduos() {
+        ArrayList<String[]> residuosArray = new ArrayList<>();
+
+        for (var residuo: residuos) {
+            residuosArray.add(new String[]{residuo.getNome(), residuo.getLocalDescarte(), String.valueOf(residuo.getValor())});
+        }
+
+        mudarMateriais(residuosArray, "resíduo", "localDescarte", locaisDescarte);
     }
 
     private ArrayList<String[]> lerMateriais(JSONArray informacoes, String chaveLocal) {
@@ -274,9 +426,9 @@ public class Configurador {
 
     private void lerResiduos(JSONArray residuosJson) {
         ArrayList<Residuo> residuos = new ArrayList<>();
-        var materias = lerMateriais(residuosJson, "localDescarte");
+        var materiais = lerMateriais(residuosJson, "localDescarte");
 
-        for (var material: materias) {
+        for (var material: materiais) {
             String nome = material[0];
             String localDescarte = material[1];
             long valor = Long.parseLong(material[2]);

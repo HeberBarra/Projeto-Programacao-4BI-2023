@@ -7,6 +7,7 @@ import java.util.Arrays;
 public class InputUsuario {
 
     private final String[] valoresProibidos = {"", " ", OpcoesInput.CANCELAR.getValor(), OpcoesInput.REPETIR.getValor()};
+
     public String tratarInputString(String mensagem) throws CancelarOperacao {
         while (true) {
             String input = JOptionPane.showInputDialog(mensagem);
@@ -38,14 +39,7 @@ public class InputUsuario {
         }
     }
 
-    public String escolhaDeLista(ArrayList<String> listaOpcoes, String nome) throws CancelarOperacao {
-        String[] opcoes = new String[listaOpcoes.size() + 1];
-        opcoes[0] = "Outro";
-
-        for (int i = 0; i < listaOpcoes.size(); i++) {
-            opcoes[i + 1] = listaOpcoes.get(i);
-        }
-
+    public String escolhaDeLista(String[] listaOpcoes, String nome) throws CancelarOperacao {
         String resposta;
 
         while (true) {
@@ -56,8 +50,8 @@ public class InputUsuario {
                     "ESCOLHA",
                     JOptionPane.PLAIN_MESSAGE,
                     null,
-                    opcoes,
-                    opcoes[0]
+                    listaOpcoes,
+                    listaOpcoes[0]
             );
 
             if (resposta == null) {
@@ -76,5 +70,17 @@ public class InputUsuario {
             break;
         }
         return resposta;
+    }
+
+
+    public String escolhaDeLista(ArrayList<String> listaOpcoes, String nome) throws CancelarOperacao {
+        String[] opcoes = new String[listaOpcoes.size() + 1];
+        opcoes[0] = "Outro";
+
+        for (int i = 0; i < listaOpcoes.size(); i++) {
+            opcoes[i + 1] = listaOpcoes.get(i);
+        }
+
+        return escolhaDeLista(opcoes, nome);
     }
 }
