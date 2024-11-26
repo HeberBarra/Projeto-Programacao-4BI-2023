@@ -82,7 +82,7 @@ public class Tarefa {
                     // ArrayList para salvar as informações
                     ArrayList<Recurso> recursos = new ArrayList<>();
 
-                    // como os recursos ficam salvos numa lista dentro do salvo 
+                    // como os recursos ficam salvos numa lista;
                     // é necessário percorrê-la para pegar cada um deles
                     for (int i = 0; i < ((JSONArray) valorJson).length(); i++) {
                         // pega o objeto do index atual
