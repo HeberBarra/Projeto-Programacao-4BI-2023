@@ -1,10 +1,12 @@
 import org.json.JSONObject;
 
 public class LeitorJson {
-     private final String  ARQUIVO_DE_CONFIGURACOES = "src/main/resources/config/config.json";
-
-     public JSONObject lerArquivo() {
+     public JSONObject lerArquivo(String caminhoArquivo) {
+          // TODO: terminar método que lê um determinado arquivo JSON
+          //  e retorna seus valores em um JSONObject
           JSONObject arquivoJSON = new JSONObject();
+
+          // return só pra não dá erro, mude
           return arquivoJSON;
      }
 }
