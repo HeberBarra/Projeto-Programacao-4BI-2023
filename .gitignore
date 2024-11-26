@@ -45,4 +45,4 @@ build/
 
 ### Programa ###
 
-main/resources/tarefas/
+src/main/resources/tarefas/
