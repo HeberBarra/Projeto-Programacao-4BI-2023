@@ -1,3 +1,5 @@
+package com.main;
+
 import InputUsuario.InputUsuario;
 import Tarefa.Recurso;
 import Tarefa.Residuo;
